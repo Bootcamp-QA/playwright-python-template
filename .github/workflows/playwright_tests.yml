@@ -12,12 +12,12 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.13'  # Actualizado a la versión 3.13
 
       - name: Install dependencies
         run: |
@@ -35,7 +35,7 @@ jobs:
 
       - name: Upload HTML reports
         if: always()  # Siempre se ejecutará este paso
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: html-reports
           path: |
@@ -44,8 +44,7 @@ jobs:
 
       - name: Upload Videos
         if: always()  # Siempre se ejecutará este paso
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-videos
           path: videos/
-
