@@ -12,12 +12,12 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.13'  # Actualizado a la versión 3.13
+          python-version: '3.9'  # Versión recomendada para compatibilidad
 
       - name: Install dependencies
         run: |
@@ -34,8 +34,8 @@ jobs:
           pytest --html=reports/report_mobile.html --self-contained-html --recordvideo=true --browser=mobile tests/
 
       - name: Upload HTML reports
-        if: always()  # Siempre se ejecutará este paso
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-artifact@v2
         with:
           name: html-reports
           path: |
@@ -43,8 +43,8 @@ jobs:
             reports/report_mobile.html
 
       - name: Upload Videos
-        if: always()  # Siempre se ejecutará este paso
-        uses: actions/upload-artifact@v4
+        if: always()
+        uses: actions/upload-artifact@v2
         with:
           name: test-videos
           path: videos/
