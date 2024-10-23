@@ -1,76 +1,29 @@
 name: Playwright Tests
-
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
-  schedule:
-    - cron: "0 0 * * 0"  # Ejecuta las pruebas cada domingo a la medianoche (UTC)
-
+    branches: [ main, master ]
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        device: [ 'Desktop Chrome', 'iPhone 12' ]  # Usar nombres con espacios
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Ensure browsers are installed
-        run: python -m playwright install --with-deps
-
-      - name: Run Playwright tests
-        run: |
-          pytest --device="${{ matrix.device }}" \
-                 --html="report-${{ matrix.device}}.html" \  # Genera un reporte con el nombre del dispositivo, reemplazando espacios por guiones
-                 --tracing=retain-on-failure \
-                 --video=retain-on-failure \
-                 --screenshot=only-on-failure
-        env:
-          PLAYWRIGHT_DEVICE: ${{ matrix.device }}
-
-      # Sube el reporte HTML
-      - name: Upload HTML Report
-        if: always()  # Sube el reporte HTML independientemente del resultado de las pruebas
-        uses: actions/upload-artifact@v4
-        with:
-          name: html-report-${{ github.run_id }}-${{ matrix.device}}  # Nombra el artefacto según el dispositivo
-          path: report-${{ matrix.device}}.html  # Ruta del reporte HTML
-
-      # Sube las trazas si hay fallos
-      - name: Upload Playwright Traces
-        if: failure()  # Solo sube si hay fallos en las pruebas
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces-${{ github.run_id }}-${{ matrix.device}}  # Nombra el artefacto según el dispositivo
-          path: test-results/trace.zip
-
-      # Sube los videos si hay fallos
-      - name: Upload Test Videos
-        if: failure()  # Solo sube si hay fallos en las pruebas
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-videos-${{ github.run_id }}-${{ matrix.device}}  # Nombra el artefacto según el dispositivo
-          path: test-results/videos/
-
-      # Sube las capturas de pantalla si hay fallos
-      - name: Upload Test Screenshots
-        if: failure()  # Solo sube si hay fallos en las pruebas
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-screenshots-${{ github.run_id }}-${{ matrix.device}}  # Nombra el artefacto según el dispositivo
-          path: test-results/screenshots/
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Ensure browsers are installed
+      run: python -m playwright install --with-deps
+    - name: Run your tests
+      run: pytest --tracing=retain-on-failure
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-traces
+        path: test-results/
