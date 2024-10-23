@@ -15,8 +15,8 @@ jobs:
 
     strategy:
       matrix:
-        device: [ 'Desktop Chrome', 'iPhone 12' ]  # Ejecuta en Chrome (escritorio) y iPhone 12 (emulado)
-    
+        device: [ 'Desktop Chrome', 'iPhone 12' ]  # Usar nombres con espacios
+
     steps:
       - uses: actions/checkout@v4
 
@@ -36,7 +36,7 @@ jobs:
       - name: Run Playwright tests
         run: |
           pytest --device="${{ matrix.device }}" \
-                 --html="report-${{ matrix.device.replace(' ', '-') }}.html" \  # Genera un reporte con el nombre del dispositivo sin espacios
+                 --html="report-${{ matrix.device // ' ' // '-' }}.html" \  # Genera un reporte con el nombre del dispositivo, reemplazando espacios por guiones
                  --tracing=retain-on-failure \
                  --video=retain-on-failure \
                  --screenshot=only-on-failure
@@ -48,15 +48,15 @@ jobs:
         if: always()  # Sube el reporte HTML independientemente del resultado de las pruebas
         uses: actions/upload-artifact@v4
         with:
-          name: html-report-${{ matrix.device.replace(' ', '-') }}  # Nombra el artefacto según el dispositivo sin espacios
-          path: report-${{ matrix.device.replace(' ', '-') }}.html  # Ruta del reporte HTML sin espacios
+          name: html-report-${{ github.run_id }}-${{ matrix.device // ' ' // '-' }}  # Nombra el artefacto según el dispositivo
+          path: report-${{ matrix.device // ' ' // '-' }}.html  # Ruta del reporte HTML
 
       # Sube las trazas si hay fallos
       - name: Upload Playwright Traces
         if: failure()  # Solo sube si hay fallos en las pruebas
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-traces-${{ matrix.device.replace(' ', '-') }}  # Nombra el artefacto según el dispositivo sin espacios
+          name: playwright-traces-${{ github.run_id }}-${{ matrix.device // ' ' // '-' }}  # Nombra el artefacto según el dispositivo
           path: test-results/trace.zip
 
       # Sube los videos si hay fallos
@@ -64,7 +64,7 @@ jobs:
         if: failure()  # Solo sube si hay fallos en las pruebas
         uses: actions/upload-artifact@v4
         with:
-          name: test-videos-${{ matrix.device.replace(' ', '-') }}  # Nombra el artefacto según el dispositivo sin espacios
+          name: test-videos-${{ github.run_id }}-${{ matrix.device // ' ' // '-' }}  # Nombra el artefacto según el dispositivo
           path: test-results/videos/
 
       # Sube las capturas de pantalla si hay fallos
@@ -72,7 +72,5 @@ jobs:
         if: failure()  # Solo sube si hay fallos en las pruebas
         uses: actions/upload-artifact@v4
         with:
-          name: test-screenshots-${{ matrix.device.replace(' ', '-') }}  # Nombra el artefacto según el dispositivo sin espacios
+          name: test-screenshots-${{ github.run_id }}-${{ matrix.device // ' ' // '-' }}  # Nombra el artefacto según el dispositivo
           path: test-results/screenshots/
-
-
