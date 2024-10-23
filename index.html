@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Python Tutorial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #444;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        section {
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-left: 5px solid #ccc;
+        }
+
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Playwright Python Tutorial</h1>
+    </header>
+
+    <nav>
+        <a href="#install-run-tests">Instalación y Ejecución de Tests</a>
+        <a href="#record-tests">Grabación de Tests</a>
+        <a href="#record-videos-options">Grabación de Videos y Otras Opciones</a>
+        <a href="#debug-tests">Depuración</a>
+        <a href="#trace-record-view">Grabar y Ver Trazas</a>
+        <a href="#advanced-locators">Localizadores Avanzados</a>
+        <a href="#common-actions">Acciones Comunes</a>
+        <a href="#common-assertions">Aserciones Comunes</a>
+    </nav>
+
+    <section id="install-run-tests">
+        <h2>1. Instalación y Ejecución de Tests</h2>
+        <p>Para comenzar, asegúrate de tener Python instalado y las dependencias necesarias.</p>
+        <h3>Instalación de Python</h3>
+        <pre>
+1. Descarga e instala Python desde su <a href="https://www.python.org/downloads/">página oficial</a>.
+2. Añade Python a tu <code>PATH</code> durante la instalación.
+    </pre>
+
+        <h3>Instalar Dependencias</h3>
+        <p>Clona el repositorio y navega a la carpeta del proyecto. Luego, instala las dependencias con:</p>
+        <pre>
+pip install -r requirements.txt
+playwright install
+    </pre>
+
+        <h3>Ejecución de Tests</h3>
+        <p>Para ejecutar las pruebas en local:</p>
+        <pre>
+pytest
+# O si no reconoce el comando pytest
+python -m pytest
+    </pre>
+    </section>
+
+    <section id="record-tests">
+        <h2>2. Grabación de Tests</h2>
+        <p>Playwright permite grabar tests automáticamente mediante el comando <code>codegen</code>.</p>
+        <pre>
+# Graba un test interactivo en Playwright
+playwright codegen https://bootcampqa.com
+    </pre>
+        <p>Esto abrirá un navegador donde puedes realizar interacciones, y Playwright generará automáticamente el código
+            de test.</p>
+    </section>
+
+    <section id="record-videos-options">
+        <h2>3. Grabación de Videos y Otras Opciones</h2>
+        <p>Playwright permite grabar videos de cada test y ajustar varias opciones. Aquí están algunas de las más
+            útiles:</p>
+
+        <h3>Grabar Videos</h3>
+        <pre>
+# Graba un video de cada test
+pytest --video=on
+# Solo graba si falla
+pytest --video=retain-on-failure
+    </pre>
+
+        <h3>Capturas de Pantalla</h3>
+        <pre>
+# Captura una captura de pantalla después de cada test
+pytest --screenshot=on
+# Solo captura si falla
+pytest --screenshot=only-on-failure
+    </pre>
+
+        <h3>Opciones Adicionales</h3>
+        <pre>
+# Ejecuta en modo visible
+pytest --headed
+
+# Emula un dispositivo
+pytest --device="iPhone 12"
+    </pre>
+    </section>
+
+    <section id="debug-tests">
+        <h2>4. Depuración</h2>
+        <p>Para depurar los tests, puedes activar el modo debug en Playwright:</p>
+        <pre>
+set PWDEBUG=1
+pytest -s test_visit_page.py  
+    </pre>
+        <p>Esto abrirá el navegador en modo interactivo para inspeccionar paso a paso lo que sucede durante la prueba.
+        </p>
+    </section>
+
+    <section id="trace-record-view">
+        <h2>5. Grabar y Ver Trazas</h2>
+        <p>Las trazas te permiten revisar exactamente lo que sucedió en cada test, especialmente útil cuando una prueba
+            falla.</p>
+
+        <h3>Grabar Trazas</h3>
+        <pre>
+# Graba una traza de cada prueba
+pytest --tracing=on
+# Solo graba traza si falla
+pytest --tracing=retain-on-failure
+    </pre>
+
+        <h3>Ver las Trazas</h3>
+        <p>Una vez que hayas grabado una traza, puedes verla usando el siguiente comando:</p>
+        <pre>
+playwright show-trace trace.zip
+    </pre>
+    </section>
+
+    <section id="advanced-locators">
+        <h2>6. Localizadores Avanzados</h2>
+        <p>Los localizadores permiten interactuar con elementos en la página. Aquí te dejo una lista ordenada por
+            recomendación de uso:</p>
+
+        <h3>1. Por <code>data-testid</code> (Recomendado)</h3>
+        <pre>
+locator = page.get_by_test_id("submit-button")
+    </pre>
+
+        <h3>2. Por Texto</h3>
+        <pre>
+locator = page.get_by_text("Iniciar sesión")
+    </pre>
+
+        <h3>3. Por Rol</h3>
+        <pre>
+locator = page.get_by_role("button", name="Enviar")
+    </pre>
+
+        <h3>4. Por Selector CSS</h3>
+        <pre>
+locator = page.locator("div.contenedor > input[name='email']")
+    </pre>
+    </section>
+
+    <section id="common-actions">
+        <h2>7. Acciones Comunes</h2>
+        <p>Aquí tienes algunas de las acciones más comunes que puedes realizar con Playwright:</p>
+
+        <h3>Hacer Clic</h3>
+        <pre>
+locator.click()
+    </pre>
+
+        <h3>Escribir Texto</h3>
+        <pre>
+locator.fill("Texto a escribir")
+    </pre>
+
+        <h3>Seleccionar una Opción en un Select</h3>
+        <pre>
+locator.select_option("value_opcion")
+    </pre>
+
+        <h3>Marcar o Desmarcar un Checkbox</h3>
+        <pre>
+# Marcar un checkbox
+locator.check()
+
+# Desmarcar un checkbox
+locator.uncheck()
+    </pre>
+
+        <h3>Esperar que un Elemento Sea Visible</h3>
+        <pre>
+locator.wait_for(state="visible")
+    </pre>
+    </section>
+
+    <section id="common-assertions">
+        <h2>8. Aserciones Comunes</h2>
+        <p>Las aserciones son fundamentales para validar los resultados de las pruebas. Aquí tienes algunas comunes y
+            avanzadas:</p>
+
+        <h3>Verificar que un Elemento Contenga un Texto Específico</h3>
+        <pre>
+expect(locator).to_contain_text("Texto parcial")
+    </pre>
+
+        <h3>Comprobar que un Elemento NO esté Visible</h3>
+        <pre>
+        expect(locator).not.to_be_visible()
+    </pre>
+
+        <h3>Comprobar que una URL Contenga un Texto</h3>
+        <pre>
+import re
+expect(page).to_have_url(re.compile(".*dashboard"))
+    </pre>
+
+        <h3>Comprobar que un Elemento tenga un Color Específico</h3>
+        <pre>
+expect(locator).to_have_css("color", "rgb(255, 0, 0)")  # rojo
+    </pre>
+
+        <h3>Comprobar que una Lista Contiene un Número de Elementos</h3>
+        <pre>
+expect(locator).to_have_count(5)
+    </pre>
+    </section>
+
+    <section id="documentation">
+        <h2>9. Documentación Oficial</h2>
+        <p>Para más detalles y ejemplos, consulta la <a href="https://playwright.dev/python/docs/intro">documentación oficial de Playwright para Python</a>.</p>
+    </section>
+
+</body>
+
+</html>

@@ -37,17 +37,47 @@ playwright install
 ### Ejecutar en Local
 Para ejecutar las pruebas en local, usa el siguiente comando en la terminal:
 pytest
+Si no reconoce el comando pytest puedes ejecutarlo con python
+python -m pytest
 
-### Ejecutar en modo debug
-Esto ejecutara en modo iteractivo una prueba
-pytest -s test_file.py
+### Parametros
+Para ejecutar en el navegador chrome, firefox o webkit
+--browser (chromium, firefox, webkit)
 
-pytest --pdb
+Para ejecutar en modo visible
+--headed
 
+Para ejecutar en paralelo
+--numprocesses 2
+
+Para emular un dispositivo (escritorio o movil) concreto
+Puedes elegir de la lista
+https://github.com/microsoft/playwright/blob/main/packages/playwright-core/src/server/deviceDescriptorsSource.json
+--device="iPhone 12"
+
+# Generar reporte html
+Necesario tener instalado pytest-html
+--html=report.html
+
+# Generar traza del error
+--tracing on (on, off,retain-on-failure)
+
+# Abrir traza del error
+playwright show-trace trace.zip
+
+https://playwright.dev/python/docs/test-runners
+
+--video Whether to record video for each test. on, off, or retain-on-failure (default: off).
+--screenshot Whether to automatically capture a screenshot after each test. on, off, or only-on-failure (default: off).
+--full-page-screenshot Whether to take a full page screenshot on failure. By default, only the viewport is captured. Requires --screenshot to be enabled (default: off).
 
 ### Generar codigo
 playwright codegen https://bootcampqa.com
 
+### Debugear codigo
+set PWDEBUG=1
+pytest -s test_visit_page.py  
+pytest -s -k  test_visit
 
 
 

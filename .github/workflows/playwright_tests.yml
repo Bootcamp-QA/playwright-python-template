@@ -1,29 +1,78 @@
 name: Playwright Tests
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
+  schedule:
+    - cron: "0 0 * * 0"  # Ejecuta las pruebas cada domingo a la medianoche (UTC)
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        device: [ 'Desktop Chrome', 'iPhone 12' ]  # Ejecuta en Chrome (escritorio) y iPhone 12 (emulado)
+    
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
     - name: Ensure browsers are installed
       run: python -m playwright install --with-deps
-    - name: Run your tests
-      run: pytest --tracing=retain-on-failure
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+
+    - name: Run Playwright tests
+      run: |
+        pytest --device="${{ matrix.device }}" \
+               --html=report.html \
+               --tracing=retain-on-failure \
+               --video=retain-on-failure \
+               --screenshot=only-on-failure
+      env:
+        PLAYWRIGHT_DEVICE: ${{ matrix.device }}
+
+    # Sube el reporte HTML
+    - name: Upload HTML Report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: report.html
+
+    # Sube las trazas si hay fallos
+    - name: Upload Playwright Traces
+      if: failure()
+      uses: actions/upload-artifact@v4
       with:
         name: playwright-traces
-        path: test-results/
+        path: test-results/trace.zip
+
+    # Sube los videos si hay fallos
+    - name: Upload Test Videos
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-videos
+        path: test-results/videos/
+
+    # Sube las capturas de pantalla si hay fallos
+    - name: Upload Test Screenshots
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-screenshots
+        path: test-results/screenshots/
+
+
