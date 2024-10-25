@@ -52,7 +52,7 @@ jobs:
       if: always()
       with:
         name: playwright-report-desktop
-        path: test-results/*.html
+        path: test-results/resultsdesktop.html
 
     - uses: actions/upload-artifact@v4
       if: always()
