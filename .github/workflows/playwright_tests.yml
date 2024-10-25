@@ -29,10 +29,10 @@ jobs:
 
     - name: Run test on desktop
       run: |
-        pytest --tracing=retain-on-failure --trace=test-results/desktop/ --video=test-results/desktop/  --html=test-results/desktop/resultsdesktop.html --self-contained-html --device="Desktop Chrome"
+        pytest --tracing=retain-on-failure --video=test-results/desktop/  --html=test-results/desktop/resultsdesktop.html --self-contained-html --device="Desktop Chrome"
     - name: Run test on mobile
       run: |
-        pytest --tracing=retain-on-failure --trace=test-results/desktop/ --video=test-results/mobile/ --html=test-results/mobile/resultsmobile.html --self-contained-html --device="iPhone 12"
+        pytest --tracing=retain-on-failure --video=test-results/mobile/ --html=test-results/mobile/resultsmobile.html --self-contained-html --device="iPhone 12"
     - uses: actions/upload-artifact@v4
       if: always()
       with:
