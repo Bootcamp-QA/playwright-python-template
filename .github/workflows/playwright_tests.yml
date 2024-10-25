@@ -9,49 +9,32 @@ on:
     - cron: '0 0 * * 0'
 
 jobs:
-  setup:
+  test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Ensure browsers are installed
+      run: python -m playwright install --with-deps
 
-      - name: Ensure browsers are installed
-        run: python -m playwright install --with-deps
-
-  desktop-tests:
-    runs-on: ubuntu-latest
-    needs: setup  # Este job espera a que el job de setup se complete
-    steps:
-      - name: Run test on desktop
-        run: |
-          python -m pytest --tracing=retain-on-failure --video=on --html=test-results/resultsdesktop.html --self-contained-html --device="Desktop Chrome"
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: desktop-playwright-test-results
-          path: test-results/
-
-  mobile-tests:
-    runs-on: ubuntu-latest
-    needs: setup  # Este job espera a que el job de setup se complete
-    steps:
-      - name: Run test on mobile
-        run: |
-          python -m pytest --tracing=retain-on-failure --video=on --html=test-results/resultsmobile.html --self-contained-html --device="iPhone 12"
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: mobile-playwright-test-results
-          path: test-results/
+    - name: Run test on desktop
+      run: |
+        pytest --tracing=retain-on-failure --trace=test-results/desktop/ --video=test-results/desktop/  --html=test-results/desktop/resultsdesktop.html --self-contained-html --device="Desktop Chrome"
+    - name: Run test on mobile
+      run: |
+        pytest --tracing=retain-on-failure --trace=test-results/desktop/ --video=test-results/mobile/ --html=test-results/mobile/resultsmobile.html --self-contained-html --device="iPhone 12"
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-test-results
+        path: test-results/
