@@ -30,11 +30,11 @@ jobs:
 
     - name: Run test on desktop
       run: |
-        pytest --tracing=retain-on-failure --video=on  --html=test-results/resultsdesktop.html --self-contained-html --device="Desktop Chrome"
+        pytest --tracing=retain-on-failure --video=on  --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome"
 
     - name: Run test on mobile
       run: |
-        pytest --tracing=retain-on-failure --video=on --html=test-results/resultsmobile.html --self-contained-html --device="iPhone 12"
+        pytest --tracing=retain-on-failure --video=on --html=resultsmobile.html --self-contained-html --device="iPhone 12"
 
     - uses: actions/upload-artifact@v4
       if: failure()
@@ -52,11 +52,11 @@ jobs:
       if: always()
       with:
         name: playwright-report-desktop
-        path: test-results/resultsdesktop.html
+        path: resultsdesktop.html
 
     - uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-report-mobile
-        path: test-results/resultsmobile.html
+        path: resultsmobile.html
 
