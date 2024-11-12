@@ -2,4 +2,6 @@
 tests/__pycache__/*
 test-results/*
 .pytest_cache
-report.html
+.html
+screenshots/
+/__pycache__
