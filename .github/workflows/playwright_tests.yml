@@ -48,6 +48,16 @@ jobs:
       with:
         name: playwright-report-mobile
         path: resultsmobile.html
+    
+    - name: Install Java
+      run: |
+        sudo apt-get update
+        sudo apt-get install openjdk-11-jre -y
+
+    - name: Download AssertThat BDD JAR
+      run: |
+        curl -L -o assertthat-bdd-standalone-1.9.11.jar "https://github.com/AssertThat/AssertThat-BDD/releases/download/v1.9.11/assertthat-bdd-standalone-1.9.11.jar"
+
 
     - name: Upload Desktop JSON Report to AssertThat
       if: always()
