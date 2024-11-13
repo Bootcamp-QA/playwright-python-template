@@ -24,29 +24,53 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
     - name: Ensure browsers are installed
       run: python -m playwright install --with-deps
 
-    - name: Run test on desktop
+    - name: Run tests on desktop
       run: |
-        pytest --tracing=retain-on-failure --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome"
-    - name: Run test on mobile
-      run: |
-        pytest --tracing=retain-on-failure --capture=tee-sys --html=resultsmobile.html --self-contained-html --device="iPhone 12"
-    - uses: actions/upload-artifact@v4
-      if: failure()
-      with:
-        name: playwright-traces
-        path: test-results/
+        pytest --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome" > desktop-log.txt
 
-    - uses: actions/upload-artifact@v4
+    - name: Run tests on mobile
+      run: |
+        pytest --capture=tee-sys --html=resultsmobile.html --self-contained-html --device="iPhone 12" > mobile-log.txt
+
+    - name: Upload Playwright report (Desktop)
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-report-desktop
         path: resultsdesktop.html
 
-    - uses: actions/upload-artifact@v4
+    - name: Upload Playwright report (Mobile)
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: playwright-report-mobile
         path: resultsmobile.html
+
+    - name: Post Python logs as a comment
+      if: always()
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const desktopLog = require('fs').readFileSync('desktop-log.txt', 'utf-8');
+          const mobileLog = require('fs').readFileSync('mobile-log.txt', 'utf-8');
+          const logContent = `## Playwright Logs\n\n### Desktop Log:\n\`\`\`\n${desktopLog}\n\`\`\`\n\n### Mobile Log:\n\`\`\`\n${mobileLog}\n\`\`\``;
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: logContent,
+          });
+
+    - name: Send results to AssertThat
+      if: always()
+      run: |
+        curl -X POST https://api.asserthat.com/results \
+          -H "Authorization: Bearer ${{ secrets.ASSERTHAT_TOKEN }}" \
+          -F "projectId=10005" \
+          -F "file=@resultsdesktop.html" \
+          -F "file=@resultsmobile.html"
+
