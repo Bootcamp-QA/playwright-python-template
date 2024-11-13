@@ -53,7 +53,7 @@ jobs:
       if: always()
       run: |
         curl -X POST "https://bdd.assertthat.app/rest/api/1/project/10005/report" \
-          -H "Authorization: Bearer ${{ secrets.ASSERTHAT_TOKEN }}" \
+          -u ":${{ secrets.ASSERTHAT_API_TOKEN }}" \
           -F "file=@desktopreport.json" \
           -F "runName=Playwright Test Run" \
           -F "runId=-1" \
@@ -63,7 +63,7 @@ jobs:
       if: always()
       run: |
         curl -X POST "https://bdd.assertthat.app/rest/api/1/project/10005/report" \
-          -H "Authorization: Bearer ${{ secrets.ASSERTHAT_TOKEN }}" \
+          -u ":${{ secrets.ASSERTHAT_API_TOKEN }}" \
           -F "file=@desktopreport.json" \
           -F "runName=Playwright Test Run" \
           -F "runId=-1" \
