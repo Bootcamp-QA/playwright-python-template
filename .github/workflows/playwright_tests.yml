@@ -59,9 +59,7 @@ jobs:
         java -jar assertthat-bdd-standalone-1.9.12.jar \
           -token "${{ secrets.ASSERTTHAT_TOKEN }}" \
           -projectId "10005" \
-          -jsonReportFolder="./" \
           -runName="Playwright Test Run" \
-          -outputFolder="./output" \
           -report \
           -type="cucumber" \
           -jsonReportIncludePattern="resultsdesktop.json"
@@ -73,8 +71,7 @@ jobs:
           -token "${{ secrets.ASSERTTHAT_TOKEN }}" \
           -projectId "10005" \
           -jsonReportFolder="./" \
-          -runName="Playwright Test Run" \
-          -outputFolder="./output" \
+          -runName="Playwright Mobile Test Run" \
           -report \
           -type="cucumber" \
-          -jsonReportIncludePattern="mobilereport.json"
+          -jsonReportIncludePattern="resultsmobile.json"
