@@ -8,8 +8,8 @@ Este proyecto realiza pruebas E2E en la web [Bootcamp QA](https://bootcampqa.com
 
 ## Tecnologías
 
-- ![Python](https://img.shields.io/badge/Python-3.9%2B-blue)  
-- ![Playwright](https://img.shields.io/badge/Playwright-v1.39-green)
+- ![Python](https://img.shields.io/badge/Python-3.12%2B-blue)  
+- ![Playwright](https://img.shields.io/badge/Playwright-v1.48-green)
 
 ## Ver Resultados
 
