@@ -5,3 +5,6 @@ test-results/*
 .html
 screenshots/
 /__pycache__
+*.json
+*.html
+*.html
