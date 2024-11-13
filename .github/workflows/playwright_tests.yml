@@ -48,25 +48,18 @@ jobs:
       with:
         name: playwright-report-mobile
         path: resultsmobile.html
-    
-    - name: Download AssertThat BDD JAR
-      run: |
-        curl -L -o assertthat-bdd-standalone-1.9.12.jar "https://github.com/assertthat/assertthat-bdd-standalone/releases/download/v1.9.12/assertthat-bdd-standalone-1.9.12.jar"
 
     - name: Upload Desktop JSON Report to AssertThat
       if: always()
       run: |
-        java -jar assertthat-bdd-standalone-1.9.12.jar \
-          -token "${{ secrets.ASSERTTHAT_TOKEN }}" \
-          -projectId "10005" \
-          -report \
-          -jsonReportIncludePattern="resultsdesktop.json"
-
-    - name: Upload Mobile JSON Report to AssertThat
-      if: always()
-      run: |
-        java -jar assertthat-bdd-standalone-1.9.12.jar \
-          -token "${{ secrets.ASSERTTHAT_TOKEN }}" \
-          -projectId "10005" \
-          -report \
-          -jsonReportIncludePattern="resultsmobile.json"
+        python -c "
+        from assertthat_bdd.jira_integration import JiraConnector
+        JiraConnector.upload_report(
+            project_id='10005',
+            token='${{ secrets.ASSERTTHAT_TOKEN }}',
+            run_name='Playwright Test Run - Desktop',
+            json_report_folder='./',
+            json_report_include_pattern='resultsdesktop.json',
+            type='cucumber'
+        )
+            "
