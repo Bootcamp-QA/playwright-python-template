@@ -49,7 +49,7 @@ jobs:
         name: playwright-report-mobile
         path: resultsmobile.html
     
-        - name: Download AssertThat BDD JAR
+    - name: Download AssertThat BDD JAR
       run: |
         curl -L -o assertthat-bdd-standalone-1.9.12.jar "https://github.com/assertthat/assertthat-bdd-standalone/releases/download/v1.9.12/assertthat-bdd-standalone-1.9.12.jar"
 
