@@ -29,14 +29,14 @@ jobs:
 
     - name: Run test on desktop
       run: |
-        pytest --tracing=retain-on-failure --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome"
+        pytest --tracing=retain-on-failure --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome" --video=on
     - name: Run test on mobile
       run: |
-        pytest --tracing=retain-on-failure --capture=tee-sys --html=resultsmobile.html --self-contained-html --device="iPhone 12"
+        pytest --tracing=retain-on-failure --capture=tee-sys --html=resultsmobile.html --self-contained-html --device="iPhone 12" --video=on
     - uses: actions/upload-artifact@v4
-      if: failure()
+      if: always()
       with:
-        name: playwright-test-results
+        name: playwright-videos
         path: test-results/
 
     - uses: actions/upload-artifact@v4
