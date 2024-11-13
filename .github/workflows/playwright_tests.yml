@@ -52,19 +52,25 @@ jobs:
     - name: Upload Desktop JSON Report to AssertThat
       if: always()
       run: |
-        curl -X POST "https://bdd.assertthat.app/rest/api/1/project/10005/report" \
-          -u ":${{ secrets.ASSERTHAT_API_TOKEN }}" \
-          -F "file=@desktopreport.json" \
-          -F "runName=Playwright Test Run" \
-          -F "runId=-1" \
-          -F "type=cucumber"
+        java -jar assertthat-bdd-standalone-1.9.11.jar \
+          -token "${{ secrets.ASSERTTHAT_TOKEN }}" \
+          -projectId "10005" \
+          -jsonReportFolder="./" \
+          -runName="Playwright Test Run" \
+          -outputFolder="./output" \
+          -report \
+          -type="cucumber" \
+          -jsonReportIncludePattern="resultsdesktop.json"
 
     - name: Upload Mobile JSON Report to AssertThat
       if: always()
       run: |
-        curl -X POST "https://bdd.assertthat.app/rest/api/1/project/10005/report" \
-          -u ":${{ secrets.ASSERTHAT_API_TOKEN }}" \
-          -F "file=@desktopreport.json" \
-          -F "runName=Playwright Test Run" \
-          -F "runId=-1" \
-          -F "type=cucumber"
+        java -jar assertthat-bdd-standalone-1.9.11.jar \
+          -token "${{ secrets.ASSERTTHAT_TOKEN }}" \
+          -projectId "10005" \
+          -jsonReportFolder="./" \
+          -runName="Playwright Test Run" \
+          -outputFolder="./output" \
+          -report \
+          -type="cucumber" \
+          -jsonReportIncludePattern="mobilereport.json"
