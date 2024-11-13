@@ -30,11 +30,11 @@ jobs:
 
     - name: Run tests on desktop
       run: |
-        pytest --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome" > desktop-log.txt
+        pytest --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome" --json-report-file=desktopreport.json
 
     - name: Run tests on mobile
       run: |
-        pytest --capture=tee-sys --html=resultsmobile.html --self-contained-html --device="iPhone 12" > mobile-log.txt
+        pytest --capture=tee-sys --html=resultsmobile.html --self-contained-html --device="iPhone 12" --json-report-file=mobilereport.json
 
     - name: Upload Playwright report (Desktop)
       uses: actions/upload-artifact@v4
@@ -50,27 +50,22 @@ jobs:
         name: playwright-report-mobile
         path: resultsmobile.html
 
-    - name: Post Python logs as a comment
-      if: always()
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const desktopLog = require('fs').readFileSync('desktop-log.txt', 'utf-8');
-          const mobileLog = require('fs').readFileSync('mobile-log.txt', 'utf-8');
-          const logContent = `## Playwright Logs\n\n### Desktop Log:\n\`\`\`\n${desktopLog}\n\`\`\`\n\n### Mobile Log:\n\`\`\`\n${mobileLog}\n\`\`\``;
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: logContent,
-          });
-
-    - name: Send results to AssertThat
+    - name: Upload Desktop JSON Report to AssertThat
       if: always()
       run: |
-        curl -X POST https://api.asserthat.com/results \
+        curl -X POST "https://bdd.assertthat.app/rest/api/1/project/10005/report" \
           -H "Authorization: Bearer ${{ secrets.ASSERTHAT_TOKEN }}" \
-          -F "projectId=10005" \
-          -F "file=@resultsdesktop.html" \
-          -F "file=@resultsmobile.html"
+          -F "file=@desktopreport.json" \
+          -F "runName=Playwright Test Run" \
+          -F "runId=-1" \
+          -F "type=cucumber"
 
+    - name: Upload Mobile JSON Report to AssertThat
+      if: always()
+      run: |
+        curl -X POST "https://bdd.assertthat.app/rest/api/1/project/10005/report" \
+          -H "Authorization: Bearer ${{ secrets.ASSERTHAT_TOKEN }}" \
+          -F "file=@desktopreport.json" \
+          -F "runName=Playwright Test Run" \
+          -F "runId=-1" \
+          -F "type=cucumber"
