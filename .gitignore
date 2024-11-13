@@ -6,5 +6,5 @@ test-results/*
 screenshots/
 /__pycache__
 *.json
-*.html
+*.css
 *.html
