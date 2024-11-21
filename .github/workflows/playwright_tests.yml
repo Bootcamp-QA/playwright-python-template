@@ -29,7 +29,7 @@ jobs:
 
     - name: Run tests on desktop
       run: |
-        pytest --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome"
+        pytest --capture=tee-sys --html=resultsdesktop.html --self-contained-html --device="Desktop Chrome" --video=on
 
     - name: Upload Playwright report (Desktop)
       uses: actions/upload-artifact@v4
@@ -40,7 +40,7 @@ jobs:
 
     - name: Upload Error traces
       uses: actions/upload-artifact@v4
-      if: failure()
+      if: always()
       with:
         name: playwright-traces
         path: test-results/
